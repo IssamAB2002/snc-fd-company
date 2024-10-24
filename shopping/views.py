@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Max, Min, Q
 from .models import Category, SubCategory, Article, Brand, ArticleImage, ArticleSpecification
 from .forms import FilterForm
@@ -100,10 +100,13 @@ def shop(request):
     # if the page num is out of range, deliver the last page
     except EmptyPage:
         page_obj.number = paginator.get_page(1)
+    if len(Article.objects.all()) > 0:
     # get highest & lowest price from articles
-    agg_results = Article.objects.aggregate(max_price=Max(
-        'wholesale_price'), min_price=Min('wholesale_price'))
-    highest_price = int(agg_results['max_price'])
+        agg_results = Article.objects.aggregate(max_price=Max(
+            'wholesale_price'))
+        highest_price = int(agg_results['max_price'])
+    else: 
+        highest_price = 0
     # check if filter applied on articles
     filter_applied = False
     if len(all_articles) < len(Article.objects.all().values()):

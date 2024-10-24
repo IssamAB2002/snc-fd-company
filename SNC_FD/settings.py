@@ -48,7 +48,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'SNC_FD.urls'
-
+DEFAULT_CHARSET = 'utf-8'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
