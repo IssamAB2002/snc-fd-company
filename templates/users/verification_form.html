@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}Phone Verification{% endblock title %}
+{% block message %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} message-container" role="alert">
+      <h4>{{ message }}</h4>
+      <span class="lnr lnr-cross msg-dismiss-btn"></span>
+    </div>
+    {% endfor %}
+{% endif %}
+{% endblock message %}
+{% block content %}
+<div class="verification-container">
+  <div class="verification-box">
+    <h2>Phone Number Verification</h2>
+    {% if error %}
+    <div class="alert-danger message-container" role="alert">
+      <h4>{{ message }}</h4>
+      <span class="lnr lnr-cross msg-dismiss-btn"></span>
+    </div>
+    {% endif %} {% if status %}
+    <p class="status-message">{{ status }}</p>
+    {% endif %}
+    <form method="post" action="{% url 'users:verify_code' %}">
+      {% csrf_token %}
+      <label for="verification_code">Verification Code:</label>
+      <input
+        type="text"
+        name="verification_code"
+        id="verification_code"
+        required
+      />
+      <button type="submit">Verify</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

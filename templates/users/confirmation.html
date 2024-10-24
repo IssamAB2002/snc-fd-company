@@ -1,0 +1,97 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Order Confirmation{% endblock title %}
+{% include 'core/s_banner.html' %}
+{% block message %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} message-container" role="alert">
+      <h4>{{ message }}</h4>
+      <span class="lnr lnr-cross msg-dismiss-btn"></span>
+    </div>
+  {% endfor %}
+{% endif %}
+{% endblock message %}
+{% block content %}
+<!-- Order Details Area -->
+<section class="order_details section_gap mt-5">
+  <div class="container">
+    <h3 class="title_confirmation">Thank you. Your order has been received.</h3>
+    <div class="row order_d_inner">
+      <div class="col-lg-6">
+        <div class="details_item">
+          <h4>Billing Address</h4>
+          <ul class="list">
+            <li>
+              <a href="#" class="text-capitalize"><span>Mr. </span> : {{ order.user.first_name }} {{ order.user.last_name }}</a>
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"><span>Address</span> : {{ order.user.full_address }}</a>
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"><span>Pick Up Date</span> : {{ order.pickup_date }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="details_item">
+          <h4>Order Info</h4>
+          <ul class="list">
+            <li>
+              <a href="#" class="text-capitalize"><span>Order number</span> : {{ order.id }}</a>
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"><span>Date</span> : {{ order.created_at }}</a>
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"><span>Total</span> : {{ order.total_price }} DA</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="order_details_table">
+      <h2>Order Details</h2>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order_item in order.items.all %}
+            <tr>
+              <td>
+                <p class="text-capitalize">{{ order_item.article.name }}</p>
+              </td>
+              <td>
+                <h5 class="text-capitalize">x {{ order_item.quantity }}</h5>
+              </td>
+              <td>
+                <p class="text-capitalize">{{ order_item.price }} DA</p>
+              </td>
+            </tr>              
+            {% endfor %}
+            <tr>
+              <td>
+                <h4>Subtotal</h4>
+              </td>
+              <td>
+                <h5></h5>
+              </td>
+              <td>
+                <p class="text-capitalize">{{ order.total_price }}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+	

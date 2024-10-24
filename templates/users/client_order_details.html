@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}{{ title }}{% endblock title %} 
+{% block content %} 
+{% include 'core/s_banner.html' %}
+<section class="container my-4">
+  <h2>Order Details</h2>
+  <div class="personal-order-detail">
+    <div class="row order_d_inner my-4">
+      <div class="col-lg-6">
+        <div class="details_item">
+          <h4>Personal Order Details</h4>
+          <ul class="list">
+            <li>
+              <a href="#" class="text-capitalize"
+                ><span>Mr. </span> : {{ order.user.first_name }} 
+                {{ order.user.last_name }}</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"
+                ><span>Address</span> : {{ order.user.full_address }}</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"
+                ><span>Pick Up Date</span> : {{ order.pickup_date }}</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="details_item">
+          <h4>Order Info</h4>
+          <ul class="list">
+            <li>
+              <a href="#" class="text-capitalize"
+                ><span>Order number</span> : {{ order.id }}</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"
+                ><span>Date</span> : {{ order.created_at }}</a
+              >
+            </li>
+            <li>
+              <a href="#" class="text-capitalize"
+                ><span>Total</span> : {{ order.total_price }} DA</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>Order Product Details</h2>
+  <table class="table table-bordered my-4">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr>
+        <td class="text-capitalize">{{ item.article.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.article.wholesale_price }} DA</td>
+        <td>{{ item.get_total_price }} DA</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3"><strong>Total:</strong></td>
+        <td><strong>{{ order.total_price }} DA</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+</section>
+{% endblock content %}

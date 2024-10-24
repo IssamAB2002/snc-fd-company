@@ -1,0 +1,673 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% load url_helpers %} 
+{% block title %}{{ title }}{% endblock %} 
+{% block message %} 
+{% if messages %} 
+{% for message in messages %}
+<div
+  class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} message-container"
+  role="alert"
+>
+  <h4>{{ message }}</h4>
+  <span class="lnr lnr-cross msg-dismiss-btn"></span>
+</div>
+{% endfor %} 
+{% endif %} 
+{% endblock message %} 
+{% block content %}
+<!-- start banner Area -->
+<section class="banner-area position-relative">
+  <div class="container">
+    <div class="row fullscreen align-items-center justify-content-start">
+      <div class="col-lg-12">
+        <div class="active-banner-slider owl-carousel">
+          <!-- single-slide -->
+          <div
+            class="row single-slide align-items-center d-flex flex-nowrap banner-holder"
+          >
+            <div class="col-lg-5 col-md-6">
+              <div class="banner-content">
+                <h1>Nike New <br />Collection!</h1>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation.
+                </p>
+                <p class="s-desc">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Culpa, in.
+                </p>
+                <div class="add-bag d-flex align-items-center">
+                  <a class="add-btn" href=""
+                    ><span class="lnr lnr-cross"></span
+                  ></a>
+                  <span class="add-text text-uppercase">Add to Bag</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="banner-img">
+                <img
+                  class="img-fluid lazyload"
+                  data-src="{% static 'img/banner/banner-img.png' %}"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+          <!-- single-slide -->
+          <div
+            class="row single-slide align-items-center d-flex flex-nowrap banner-holder"
+          >
+            <div class="col-lg-5 col-md-6">
+              <div class="banner-content">
+                <h1>Gucci New <br />Collection!</h1>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation.
+                </p>
+                <p class="s-desc">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Culpa, in.
+                </p>
+                <div class="add-bag d-flex align-items-center">
+                  <a class="add-btn" href=""
+                    ><span class="lnr lnr-cross"></span
+                  ></a>
+                  <span class="add-text text-uppercase">Add to Bag</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="banner-img">
+                <img
+                  class="img-fluid"
+                  src="{% static 'img/banner/—Pngtree—wrench tools_7517107.png' %}"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+
+          {% for article in banner_articles %}
+          <!-- single-slide -->
+          <div
+            class="row single-slide align-items-center d-flex flex-nowrap banner-holder"
+          >
+            <div class="col-lg-5 col-md-6">
+              <div class="banner-content">
+                <h1>{{ article.title }}</h1>
+                <p>{{ article.description }}</p>
+                <div class="add-bag d-flex align-items-center">
+                  <a
+                    class="add-btn"
+                    href="{% url 'shopping:article_details' article.article.slug %}"
+                    ><span class="lnr lnr-cross"></span
+                  ></a>
+                  <span class="add-text text-uppercase">Add to Bag</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="banner-img">
+                <img
+                  class="img-fluid lazyload"
+                  data-src="{{ article.article.images.first.image.url }}"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- start features area -->
+<section class="features-area section_gap">
+  <div class="container">
+    <div class="row features-inner">
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{% static 'img/features/f-icon1.png' %}" alt="" />
+          </div>
+          <h6>Delivery Available</h6>
+          <p>Delivery availablae in various places</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{% static 'img/features/f-icon2.png' %}" alt="" />
+          </div>
+          <h6>Return Policy</h6>
+          <p>We accept returned goods</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{% static 'img/features/f-icon3.png' %}" alt="" />
+          </div>
+          <h6>Full Time Support</h6>
+          <p>We offre full time support</p>
+        </div>
+      </div>
+      <!-- single features -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="single-features">
+          <div class="f-icon">
+            <img src="{% static 'img/features/f-icon4.png' %}" alt="" />
+          </div>
+          <h6>Big Store</h6>
+          <p>A Store, you can check out</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- category area -->
+<section class="category-area">
+  <div class="container">
+    <div class="row">
+      {% for category in categories %}
+      <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+        <a href="{% url 'shopping:shop' %}?category={{ category.subcategory_set.first.id }}" class="single-card">
+          <div class="card-content">
+            {% if category.image %}
+            <img
+              class="card-logo lazyload"
+              data-src="{{ category.image.url }}"
+            />
+            {% endif %}
+            <div class="card-details {% if not category.image %}ml-5 mt-2{% endif %}">
+              <h6 class="card-title text-capitalize">{{ category.name }}</h6>
+            </div>
+          </div>
+        </a>
+      </div>        
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- start product Area -->
+<section class="owl-carousel active-product-area section_gap">
+  <!-- single product slide -->
+  <div class="single-product-slider">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+          <div class="section-title">
+            <h1>Latest Products</h1>
+            <p>
+              Our latest collection features handcrafted Berber rugs,
+              intricately woven with traditional patterns. Adorn your space with
+              the timeless beauty of our rugs, crafted from the finest
+              materials. Explore our online store for a unique shopping
+              experience.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        {% for article in latest_articles %}
+        <!-- single product -->
+        <div class="col-lg-3 col-md-6">
+          <div class="single-product position-relative">
+            {% if article.discounted_price %}
+              <div class="sold-badge">
+                <span>SOLD</span>
+              </div>
+              {% endif %}
+            <img
+              class="img-fluid lazyload"
+              data-src="{{ article.images.first.image.url }}"
+              alt=""
+            />
+            <div class="product-details">
+              <h6 class="text-capitalize">{{ article.name }}</h6>
+              <div class="price">
+                {% if article.discounted_price %}
+                <h6>{{ article.discounted_price }} DA</h6>
+                <h6 class="l-through">{{ article.wholesale_price }} DA</h6>
+                {% else %}
+                <h6>{{ article.wholesale_price }} DA</h6>
+                {% endif %}
+              </div>
+              <div class="prd-bottom">
+                <a
+                  href="{% url 'shopping:article_details' article.slug %}"
+                  class="social-info"
+                >
+                  <span class="ti-bag"></span>
+                  <p class="hover-text">add to bag</p>
+                </a>
+                <!-- <a href="" class="social-info">
+                  <span class="lnr lnr-heart"></span>
+                  <p class="hover-text">Wishlist</p>
+                </a>
+                <a href="" class="social-info">
+                  <span class="lnr lnr-sync"></span>
+                  <p class="hover-text">compare</p>
+                </a> -->
+                <a
+                  href="{% url 'shopping:article_details' article.slug %}"
+                  class="social-info"
+                >
+                  <span class="lnr lnr-move"></span>
+                  <p class="hover-text">view more</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <!-- single product slide -->
+  <div class="single-product-slider">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+          <div class="section-title">
+            <h1>From Our Products</h1>
+            <p>
+              Our store offers a curated selection of authentic Berber
+              artifacts, including jewelry, pottery, and textiles. Discover
+              unique pieces that showcase the artistry and heritage of this
+              ancient people. Explore our online store to find the perfect
+              addition to your collection..
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        {% for article in random_articles %}
+        <!-- single product -->
+        <div class="col-lg-3 col-md-6">
+          <div class="single-product position-relative">
+            {% if article.discounted_price %}
+            <div class="sold-badge">
+              <span>SOLD</span>
+            </div>
+            {% endif %}
+            <img
+              class="img-fluid lazyload"
+              data-src="{{ article.images.first.image.url }}"
+              alt=""
+            />
+            <div class="product-details">
+              <h6 class="text-capitalize">{{ article.name }}</h6>
+              <div class="price">
+                {% if article.discounted_price %}
+                <h6>{{ article.discounted_price }} DA</h6>
+                <h6 class="l-through">{{ article.wholesale_price }} DA</h6>
+                {% else %}
+                <h6>{{ article.wholesale_price }} DA</h6>
+                {% endif %}
+              </div>
+              <div class="prd-bottom">
+                <a
+                  href="{% url 'shopping:article_details' article.slug %}"
+                  class="social-info"
+                >
+                  <span class="ti-bag"></span>
+                  <p class="hover-text">add to bag</p>
+                </a>
+                <!-- <a href="" class="social-info">
+                  <span class="lnr lnr-heart"></span>
+                  <p class="hover-text">Wishlist</p>
+                </a>
+                <a href="" class="social-info">
+                  <span class="lnr lnr-sync"></span>
+                  <p class="hover-text">compare</p>
+                </a> -->
+                <a
+                  href="{% url 'shopping:article_details' article.slug %}"
+                  class="social-info"
+                >
+                  <span class="lnr lnr-move"></span>
+                  <p class="hover-text">view more</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- start exclusive deal area -->
+
+{% if sold_articles.count > 0 %}
+<section class="exclusive-deal-area">
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-lg-6 no-padding exclusive-left">
+        <div class="row clock_sec clockdiv" id="clockdiv">
+          <div class="col-lg-12">
+            <h1>Exclusive Hot Deal Ends Soon!</h1>
+            <p>Who are in extremely love with eco friendly system.</p>
+          </div>
+          <div class="col-lg-12">
+            <div class="row clock-wrap" id="clock-wrap">
+              <div class="col clockinner1 clockinner">
+                <h1 id="days"></h1>
+                <span class="smalltext">Days</span>
+              </div>
+              <div class="col clockinner clockinner1">
+                <h1 id="hours"></h1>
+                <span class="smalltext">Hours</span>
+              </div>
+              <div class="col clockinner clockinner1">
+                <h1 id="minutes"></h1>
+                <span class="smalltext">Mins</span>
+              </div>
+              <div class="col clockinner clockinner1">
+                <h1 id="seconds"></h1>
+                <span class="smalltext">Secs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="{% url 'shopping:shop' %}" class="primary-btn">Shop Now</a>
+      </div>
+      <div class="col-lg-6 no-padding exclusive-right">
+        {% if sold_articles.count > 1 %}
+        <!-- Show the slider -->
+        <div class="active-exclusive-product-slider">
+          {% for article in sold_articles %}
+          <div class="single-exclusive-slider">
+            <img
+              class="img-fluid"
+              src="{{ article.images.first.image.url }}"
+              alt="{{ article.name }}"
+            />
+            <div class="product-details">
+              <div class="price">
+                <h6>${{ article.discounted_price }}</h6>
+                <h6 class="l-through">${{ article.wholesale_price }}</h6>
+              </div>
+              <h4>{{ article.name }}</h4>
+              <div
+                class="add-bag d-flex align-items-center justify-content-center"
+              >
+                <a
+                  class="add-btn"
+                  href="{% url 'shopping:article_details' article.slug %}"
+                  ><span class="ti-bag"></span
+                ></a>
+                <span class="add-text text-uppercase">Add to Bag</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <!-- Show single article without slider -->
+        {% for article in sold_articles %}
+        <div class="single-exclusive-slider psoition-relative">
+          <img
+            class="img-fluid"
+            src="{{ article.images.first.image.url }}"
+            alt="{{ article.name }}"
+          />
+          <div class="product-details">
+            <div class="price">
+              <h6>${{ article.discounted_price }}</h6>
+              <h6 class="l-through">${{ article.wholesale_price }}</h6>
+            </div>
+            <h4>{{ article.name }}</h4>
+            <div
+              class="add-bag d-flex align-items-center justify-content-center"
+            >
+              <a
+                class="add-btn"
+                href="{% url 'shopping:article_details' article.slug %}"
+                ><span class="ti-bag"></span
+              ></a>
+              <span class="add-text text-uppercase">Add to Bag</span>
+            </div>
+          </div>
+        </div>
+        {% endfor %} {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- start brand area -->
+<section class="brand-area section_gap">
+  <div class="container">
+    <div class="section-title mx-auto w-100 text-center">
+      <h1 class="border-bottom pb-3">Famous Brands</h>
+      <p>
+      </p>
+    </div>
+    <div class="row align-items-center">
+      <a class="col single-img" href="{% url 'shopping:shop' %}?brand=8">
+        <img
+          class="img-fluid d-block mx-auto lazyload"
+          data-src="{% static 'img/brand/ntb-rand.png' %}"
+          alt=""
+        />
+      </a>
+      <a class="col single-img" href="#">
+        <img
+          class="img-fluid d-block mx-auto lazyload"
+          data-src="{% static 'img/brand/soficlef-brand.png' %}"
+          alt=""
+        />
+      </a>
+      <a class="col single-img" href="#">
+        <img
+          class="img-fluid d-block mx-auto lazyload"
+          data-src="{% static 'img/brand/algerbros-brand.png' %}"
+          alt=""
+        />
+      </a>
+      <a class="col single-img" href="#">
+        <img
+          class="img-fluid d-block mx-auto lazyload"
+          data-src="{% static 'img/brand/etaprem-brand.png' %}"
+          alt=""
+        />
+      </a>
+      <a class="col single-img" href="#">
+        <img
+          class="img-fluid d-block mx-auto lazyload"
+          data-src="{% static 'img/brand/miniros-brand.png' %}"
+          alt=""
+        />
+      </a>
+    </div>
+  </div>
+</section>
+<!-- End brand Area -->
+
+<!-- start related-product area -->
+<!-- <section class="related-product-area section_gap_bottom">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center">
+        <div class="section-title">
+          <h1>Deals of the Week</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r1.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r2.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r3.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r5.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r6.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r7.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r9.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r10.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r11.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="ctg-right">
+          <a href="#" target="_blank">
+            <img
+              class="img-fluid d-block mx-auto"
+              src="img/category/c5.jpg"
+              alt=""
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+{% endblock content %} {% block add_script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const endTime = new Date(
+      "{{ sold_articles.first.deal_end_time|date:'Y-m-d H:i:s' }}"
+    ).getTime();
+
+    function updateClock() {
+      const now = new Date().getTime();
+      const t = endTime - now;
+
+      const days = Math.floor(t / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((t % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerHTML = days;
+      document.getElementById("hours").innerHTML = hours;
+      document.getElementById("minutes").innerHTML = minutes;
+      document.getElementById("seconds").innerHTML = seconds;
+
+      if (t < 0) {
+        clearInterval(x);
+        document.getElementById("clock-wrap").innerHTML = "Deal Ended";
+      }
+    }
+
+    updateClock(); // run function once at first to avoid delay
+    const x = setInterval(updateClock, 1000); // update clock every second
+  });
+</script>
+{% endblock add_script %}

@@ -1,0 +1,141 @@
+{% extends "core/base.html" %} 
+{% load static %} 
+{% block title %}Dashboard{% endblock title %} 
+{% block message %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} message-container" role="alert">
+      <h4>{{ message }}</h4>
+      <span class="lnr lnr-cross msg-dismiss-btn"></span>
+    </div>
+    {% endfor %}
+        
+{% endif %}
+    
+{% endblock message %}
+{% block content %}
+<span class="toggle-btn lnr lnr-chevron-right-circle"></span>
+<div class="container-fluid pb-5 px-5" style="padding-top: 125px">
+  <div class="row">
+    <!-- Fixed Sidebar Section -->
+    <div
+      class="sidebar pt-5"
+      style="
+        width: 80px;
+        min-width: 80px;
+        max-width: 150px;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: #f8f9fa;
+        padding-top: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <div class="user-info text-center my-5">
+        <img
+          src="{% static 'img/user-placeholder.png' %}"
+          alt="User Image"
+          class="img-fluid rounded-circle"
+          style="width: 60px; height: 60px"
+        />
+        <h4 class="mt-3 text-capitalize" style="font-size: 14px">
+          {% if user.last_name %}{{ user.last_name }}{% else %}User{% endif %}
+        </h4>
+      </div>
+      <ul class="nav flex-column text-center">
+        <li class="nav-item mb-4">
+          <a
+            class="nav-link"
+            href="{% url 'users:dashboard' %}"
+            title="Profile"
+          >
+            <span class="lnr lnr-user" style="font-size: 24px"></span>
+          </a>
+        </li>
+        <li class="nav-item mb-4">
+          <a class="nav-link disabled" href="#" title="Dashboard">
+            <span class="lnr lnr-chart-bars" style="font-size: 24px"></span>
+          </a>
+        </li>
+        <li class="nav-item mb-4">
+          <a class="nav-link" href="{% url 'users:client_order_list' %}" title="Orders">
+            <span class="lnr lnr-cart" style="font-size: 24px"></span>
+          </a>
+        </li>
+        <li class="nav-item mb-4">
+          <a class="nav-link" href="{% url 'users:update_profile' %}" title="Settings">
+            <span class="lnr lnr-cog" style="font-size: 24px"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="content" style="margin-left: 80px; padding: 20px; flex-grow: 1">
+      <h2 class="text-capitalize">
+        Welcome, {% if user.last_name %}{{ user.last_name }}{% else %}User{% endif %}!
+      </h2>
+      <p>
+        Here is your dashboard where you can manage your account and view your
+        orders.
+      </p>
+
+      <!-- User Information Card -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Personal Information</h5>
+          <p>Email: {{ user.email }} {% if not user.email_verified %}<a href="{% url 'users:verify_email' %}" class="text-danger ml-2"><span class="lnr lnr-warning"></span> <strong>Not Verified</strong></a>{% endif %}</p>
+          <p>Phone: {{ user.phone_number }} {% if not user.phone_verified %}<a href="{% url 'users:verify_phonenumber' %}" class="text-danger ml-2"><span class="lnr lnr-warning"></span> <strong>Not Verified</strong></a>{% endif %}</p>
+          <p><strong>Address:</strong> {{ user.full_address }}</p>
+          {% if user.sec_phone_number %}
+          <p>
+            <strong>Second Phone Number:</strong> {{ user.sec_phone_number }}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+      <!-- Order History Card -->
+      <div class="order-history mt-3 p-3 bg-light">
+            <h4>Order History</h4>
+            {% if not orders|length == 0 %}
+                <div class="orders d-flex flex-wrap">
+                    {% for order in orders %}
+                        <div class="order-card card" style="width: 100%; margin: 1rem 3rem">
+                            <div class="card-body">
+                                <h5 class="card-title">Order #{{ order.id }}</h5>
+                                <p class="card-text">Date: {{ order.created_at|date:"d M, Y" }}</p>
+                                <p class="card-text">Total Price: ${{ order.total_price }}</p>
+                                <p class="card-text">Status: {{ order.get_status_display }}</p>
+                                <a href="{% url 'users:client_order_details' order.id %}" class="primary-btn rounded-0">View Details</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-orders p-5 text-center">
+                    <h5>No orders yet.</h5>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+{% block add_script %}
+ <script>
+  const sidebar = $('.sidebar');
+  const toggleBtn = $('.toggle-btn');
+  toggleBtn.on('click', () => {
+    sidebar.toggleClass('open');
+    if (toggleBtn.attr('class') == "toggle-btn lnr lnr-chevron-right-circle") {
+      toggleBtn.attr('class', 'toggle-btn lnr lnr-cross');
+    }
+    else {
+      toggleBtn.attr('class', "toggle-btn lnr lnr-chevron-right-circle");
+    }
+  });
+  </script>  
+{% endblock add_script %}
+  

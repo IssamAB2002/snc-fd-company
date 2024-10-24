@@ -1,0 +1,138 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}{{ title }}{% endblock title %}
+{% block message %}
+{% if messages %} 
+{% for message in messages %}
+<div
+  class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} message-container"
+  role="alert"
+>
+  <h4>{{ message }}</h4>
+  <span class="lnr lnr-cross msg-dismiss-btn"></span>
+</div>
+{% endfor %} 
+{% endif %} 
+{% endblock message %} 
+{% block content %} 
+{% include 'core/s_banner.html' %}
+<!-- contact area -->
+<section
+  class="contact_area section_gap_bottom mt-2"
+  style="padding-top: 100px"
+>
+  <div class="container-lg inner-container d-flex flex-column g-3">
+    <div class="map-frame-container w-100 text-center">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d6394.824454585446!2d3.2333297999999937!3d36.73667520000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sdz!4v1725303414259!5m2!1sen!2sdz"
+        width="700"
+        height="500"
+        style="border: 0"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        class="map-frame"
+      ></iframe>
+    </div>
+    <div class="row mt-5">
+      <div class="col-lg-6 text-center">
+        <div class="contact_info">
+          <div class="info_item">
+            <i class="lnr lnr-home"></i>
+            <h6>
+              ALgeria, Algiers, <span class="text-secondary">Hamiz 5</span>
+            </h6>
+          </div>
+          <div class="info_item">
+            <i class="lnr lnr-phone-handset"></i>
+            <h6>
+              <a href="#">+213 781612093</a
+              ><span class="text-secondary">, Sat to Thu 7am to 3 pm</span>
+            </h6>
+          </div>
+          <div class="info_item">
+            <i class="lnr lnr-envelope"></i>
+            <h6>
+              <a href="#">support@colorlib.com</a
+              ><span class="text-secondary"> Send us your query anytime!</span>
+            </h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 px-5">
+        <form class="row contact_form" action="" method="post" id="contactForm">
+          {% csrf_token %}
+
+          <div class="form-group w-100">
+            <input
+              type="text"
+              class="form-control"
+              id="subject"
+              name="subject"
+              placeholder="Enter Subject"
+              onfocus="this.placeholder = ''"
+              onblur="this.placeholder = 'Enter Subject'"
+            />
+          </div>
+          <div class="form-group w-100">
+            <textarea
+              class="form-control"
+              name="message"
+              id="message"
+              rows="1"
+              placeholder="Enter Message"
+              onfocus="this.placeholder = ''"
+              onblur="this.placeholder = 'Enter Message'"
+            ></textarea>
+          </div>
+          <div class="col-md-12 text-right">
+            <button type="submit" value="submit" class="primary-btn">
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- contact modals success & erro message -->
+<!-- modals success -->
+<div id="success" class="modal modal-message fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-close"></i>
+        </button>
+        <h2>Thank you</h2>
+        <p>Your message is successfully sent...</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modals error -->
+<div id="error" class="modal modal-message fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <i class="fa fa-close"></i>
+        </button>
+        <h2>Sorry !</h2>
+        <p>Something went wrong</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

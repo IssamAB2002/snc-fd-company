@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}Invalid Activation{% endblock title %}
+{% include 'core/s_banner.html' %} 
+{% block content %}
+<section class="container" style="padding-top: 150px;">
+  <div class="alert alert-warning py-4" role="alert">
+    <h4 class="alert-heading">Invalid Activation</h4>
+    <p>
+      Your activation is Invalid Please check your cridentials or your email account and try again.
+    </p>
+    <hr />
+    <p class="mb-0">
+      If you continue to experience issues, please contact our support team.
+    </p>
+  </div>
+</section>
+{% endblock %}

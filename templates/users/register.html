@@ -1,0 +1,144 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}Register{% endblock title %} 
+{% block content %}
+{% include 'core/s_banner.html' %} 
+<section class="login_box_area section_gap mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="login_box_img register-img">
+          <img class="img-fluid" src="{% static 'img/login.jpg' %}" alt="" />
+          <div class="hover">
+            <h4>Already have an Account</h4>
+            <p>
+              There are advances being made in science and technology everyday,
+              and a good example of this is the
+            </p>
+            <a class="primary-btn" href="{% url 'users:login' %}">Log in</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="login_form_inner register_inner_form">
+          <h3>Please Enter the necessary Informations</h3>
+          <form
+            class="row login_form"
+            action=""
+            method="post"
+            id="contactForm"
+            novalidate="novalidate"
+          >
+          <div class="col-md-12 form-group">
+            {% csrf_token %}
+            {{ form.first_name }} 
+            {% if form.first_name.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.first_name.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.last_name }} 
+            {% if form.last_name.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.last_name.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.email }} 
+            {% if form.email.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.email.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.phone_number }} 
+            {% if form.phone_number.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.phone_number.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.state }} 
+            {% if form.state.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.state.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.city }} 
+            {% if form.city.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.city.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.street }} 
+            {% if form.street.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.street.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.sec_phone_number }} 
+            {% if form.sec_phone_number.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.sec_phone_number.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.password1 }} 
+            {% if form.password1.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.password1.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-12 form-group">
+            {{ form.password2 }} 
+            {% if form.password2.errors %}
+            <div class="alert alert-danger py-3">
+              {% for error in form.password2.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+            <div class="col-md-12 form-group">
+              <button type="submit" value="submit" class="primary-btn">
+                Register
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

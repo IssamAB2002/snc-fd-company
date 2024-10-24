@@ -1,0 +1,272 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}{{ title }}{% endblock title %} 
+{% block message %} 
+{% for message in messages %}
+<div
+  class="alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} message-container"
+  role="alert"
+>
+  <h4>{{ message }}</h4>
+  <span class="lnr lnr-cross msg-dismiss-btn"></span>
+</div>
+{% endfor %} {% endblock message %} 
+{% block content %} 
+{% include 'core/s_banner.html' %} 
+{% if cart|length == 0 %}
+<section class="container msg-container" style="padding: 120px auto">
+  <div class="msg-holder">
+    <h3 class="text-secondary">Your Cart Is Empty Please Go Shopping</h3>
+    <a class="primary-btn rounded-0 my-3" href="{% url 'shopping:shop' %}">Go To Shop</a>
+  </div>
+</section>
+{% else %}
+<section class="container cart-search py-4 my-3">
+  <div class="search-container w-75 mx-auto">
+    <h4 class="mb-2">Type to search for cart items:</h4>
+    <div class="input-group mt-3">
+      <input
+        type="text"
+        name="cart-search-id"
+        id="cart-search-id"
+        placeholder="search..."
+        class="form-control .search-input"
+      />
+      <div class="input-group-append">
+        <button type="button" class="btn btn-secondary clear-search-input">
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="clear-cart-container w-100 d-flex justify-content-end mt-3 px-5">
+    <a
+      href="{% url 'shopping:clear_card' %}"
+      type="button"
+      class="btn btn-danger clear-cart mx-2"
+      >Clear Cart</a
+    >
+    <a
+      href="{% url 'shopping:shop' %}"
+      type="button"
+      class="btn btn-success clear-cart mx-2"
+      >Shop</a
+    >
+  </div>
+</section>
+<!-- cart area -->
+<section class="cart_area mt-2">
+  <div class="container">
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table" id="cart-table">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart %}
+            <tr class="item-container">
+              <td>
+                <div class="media">
+                  <div class="media-img d-flex">
+                    <img
+                      src="{{ item.article.images.first.image.url }}"
+                      alt=""
+                    />
+                  </div>
+                  <div class="media-body">
+                    <p class="text-capitalize">{{ item.article.name }}</p>
+                  </div>
+                </div>
+              </td>
+              <td>
+                {% if item.article.is_deal_active %}
+                <h5>{{ item.article.discounted_price }} DA</h5>
+                {% else %}
+                <h5>{{ item.article.wholesale_price }} DA</h5>
+                {% endif %}
+              </td>
+              <td class="quantity-container">
+                <div class="product_count">
+                  <input
+                    type="number"
+                    name="qty"
+                    id="quantity-{{ item.article.id }}"
+                    maxlength="12"
+                    value="{{ item.quantity }}"
+                    title="Quantity:"
+                    class="input-text qty"
+                    data-item-id="{{ item.article.id }}"
+                  />
+                  <button class="increase items-count" type="button">
+                    <i class="lnr lnr-chevron-up"></i>
+                  </button>
+                  <button class="reduced items-count" type="button">
+                    <i class="lnr lnr-chevron-down"></i>
+                  </button>
+                </div>
+              </td>
+              <td>
+                <h5>{{ item.total_price }} DA</h5>
+              </td>
+              <td class="btns">
+                <div
+                  class="cart-btn-container d-flex flex-column justify-content-around"
+                >
+                  <a
+                    class="btn btn-danger my-2"
+                    href="{% url 'shopping:card_remove' item.article.id %}"
+                  >
+                    <span class="lnr lnr-trash"></span>
+                  </a>
+                  <button
+                    class="btn btn-succes cart-update-btn my-2"
+                    onclick="updateCart('{{ item.article.id }}')"
+                  >
+                    <span class="lnr lnr-sync"></span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+            <tr class="bottom_button">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <div
+                  class="cupon_text d-flex justify-content-end align-items-center"
+                >
+                  <a class="primary-btn" href="{% url 'users:confirm' %}"
+                    >Confirm</a
+                  >
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                <h5>Subtotal</h5>
+              </td>
+              <td>
+                <h5>{{ cart.get_total_price }} DA</h5>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %} {% endblock content %} {% block add_script %}
+<script>
+  // define cart update function
+  function updateCart(articleId) {
+    // define quantity from input value that has id of 'quantity' + product ID (params)
+    const quantity = document.getElementById(`quantity-${articleId}`).value;
+    // make ajax request to update cart by invoke add card url
+    $.ajax({
+      // add card url
+      url: "{% url 'shopping:add_card' %}",
+      // type to POST
+      type: "POST",
+      // send data
+      data: {
+        // product ID
+        articleId: articleId,
+        // quantity getted from input
+        quantity: quantity,
+        // action to post request
+        action: "post",
+        // csrf token
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+      },
+      // in the case success
+      success: function (data) {
+        // reload page
+        location.reload();
+      },
+      // in the cas error
+      error: function (xhr, errmsg, err) {
+        // console log error
+        console.log(xhr.status + ": " + xhr.responseText);
+      },
+    });
+  }
+  let cartSearchInput = $("#cart-search-id");
+  let cartItems = $("#cart-table tr.item-container");
+  cartSearchInput.on("keyup", function () {
+    let value = $(this).val().toLowerCase();
+    let words = value.split(" ");
+
+    if (value.length > 0) {
+        cartItems.each(function () {
+            let rowText = $(this).text().toLowerCase();
+            let match = true;
+
+            for (let word of words) {
+                if (!rowText.includes(word)) {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+  });
+  let ClearSearchBtn = $(".clear-search-input");
+  ClearSearchBtn.click(function () {
+    cartSearchInput.val("");
+    cartItems.each(function () {
+      $(this).show();
+    });
+  });
+  // quantity update buttons fucntion
+  let quantityInputBtns = $(".quantity-container button");
+  let updateBtn = $('.cart-update-btn');
+  // show & hide cart update buttons
+  updateBtn.each(function () {
+    $(this).hide();
+  });
+  quantityInputBtns.click(function () {
+    let $quantityInput = $(this).siblings(".qty");
+    let currentQuantity = parseInt($quantityInput.val(), 10) || 0;
+    let operation = $(this).hasClass("increase") ? "add" : "subtract";
+    let newQuantity =
+      operation === "add" ? currentQuantity + 1 : currentQuantity - 1;
+    // Ensure newQuantity is within valid range (adjust as needed)
+    newQuantity = Math.max(1, Math.min(newQuantity, Infinity)); // Limit to 1-10
+    // Update the input value
+    $quantityInput.val(newQuantity);
+    let updBtn = $(this).closest('.quantity-container').siblings('.btns').find('.cart-update-btn')
+    updBtn.show();
+  });
+
+  
+  let quantityInput = $("input.qty");
+quantityInput.on("keyup", function() {
+  const inputValue = $(this).val();
+  const numberRegex = /^[0-9]+$/; // Matches only digits
+
+  if (!numberRegex.test(inputValue)) {
+    $(this).val(inputValue.replace(/[^0-9]/g, ''));
+    // Display an error message (optional)
+    alert("Please enter only numbers.");
+  }
+  let updBtn = $(this).closest('.quantity-container').siblings('.btns').find('.cart-update-btn')
+    updBtn.show();
+});
+</script>
+{% endblock add_script %}

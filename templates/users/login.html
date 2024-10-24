@@ -1,0 +1,77 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}Log In{% endblock title %} 
+{% block content %} 
+{% block message %} 
+{% if messages %} 
+{% for message in messages %}
+<div
+  class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} message-container"
+  role="alert"
+>
+  <h4>{{ message }}</h4>
+  <span class="lnr lnr-cross msg-dismiss-btn"></span>
+</div>
+{% endfor %} 
+{% endif %} 
+{% endblock message %}
+{% include 'core/s_banner.html' %}
+<section class="login_box_area section_gap mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="login_box_img">
+          <img class="img-fluid" src="{% static 'img/login.jpg' %}" alt="" />
+          <div class="hover">
+            <h4>New to our website?</h4>
+            <p>
+              Create an account with us. It's absolutely free and will only take
+              a minute.
+            </p>
+            <a class="primary-btn" href="{% url 'users:register' %}"
+              >Create an Account</a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="login_form_inner">
+          <h3>Log in to enter</h3>
+          <form
+            class="row login_form"
+            method="post"
+            id="contactForm"
+            novalidate="novalidate"
+          >
+            {% csrf_token %}
+            <div class="col-md-12 form-group">
+              {{ form.username }} {% if form.username.errors %}
+              <div class="alert alert-danger">
+                {% for error in form.username.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+            <div class="col-md-12 form-group">
+              {{ form.password }} {% if form.password.errors %}
+              <div class="alert alert-danger">
+                {% for error in form.password.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+            <div class="col-md-12 form-group">
+              <button type="submit" value="submit" class="primary-btn">
+                Log In
+              </button>
+              <a href="{% url 'users:password_reset' %}">Forgot Password?</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

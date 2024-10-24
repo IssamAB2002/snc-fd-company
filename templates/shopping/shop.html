@@ -1,0 +1,600 @@
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% load url_helpers %} 
+{% load custom_pagination %} 
+{% block title %}{{ title }}{% endblock title %} 
+{% include 'core/s_banner.html' %} 
+<!-- shop message for inform user article was added to cart  -->
+{% block message %}
+<div class="alert-success message-container" role="alert">
+  <h4>...</h4>
+  <span class="lnr lnr-cross msg-dismiss-btn"></span>
+</div>
+{% endblock message %} {% block content %}
+<div style="padding-top: 150px;">
+  <div class="container shop-container mb-5 ">
+    <div class="row">
+      <div class="col-xl-3 col-lg-4 col-md-5 mb-4">
+        <div class="sidebar-filter mb-5 mt-0">
+          <div class="top-filter-head slide-head">Product Filters</div>
+          <div class="filter-container slide-body">
+            <form action="{% update_query_params %}" method="get">
+              <div class="common-filter">
+                <div class="head">Query Search</div>
+                <div class="query-container px-2">
+                  {% for field in form %} {{ field }} {% endfor %}
+                  <!-- Hidden fields to retain existing query parameters for pagination -->
+                  {% for key, value in request.GET.items %} 
+                  <!-- loop over the url queries to save other queries (brand, category ..) after submit filter form -->
+                  {% if key not in 'query max_price min_price' %}
+                  <!-- check if the query in url != query max_price min_price, if yes save it after submit -->
+                  <input type="hidden" name="{{ key }}" value="{{ value }}" />
+                  {% endif %} {% endfor %}
+                </div>
+              </div>
+              <div class="common-filter">
+                <div class="head">Price</div>
+                <div class="price-range-area">
+                  <div id="price-range"></div>
+                  <div class="value-wrapper d-flex">
+                    <div class="price">Price:</div>
+                    <span>DA</span>
+                    <div id="lower-value"></div>
+                    <div class="to">to</div>
+                    <span>DA</span>
+                    <div id="upper-value"></div>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="d-flex justify-content-end px-4 py-2">
+                <button type="submit" class="btn btn-secondary">Filter</button>
+              </div>
+            </form>
+            <input
+              type="hidden"
+              name="highest-price"
+              id="highest-price"
+              value="{{ highest_price }}"
+            />
+          </div>
+        </div>
+        <div class="sidebar-categories">
+          <div class="head slide-head">Browse Categories</div>
+          <ul class="main-categories slide-body">
+            {% for category in categories %}
+            <li class="main-nav-list">
+              <a
+                data-toggle="collapse"
+                href="#{{ category.slug }}"
+                aria-expanded="false"
+                aria-controls="{{ category.slug }}"
+                ><span class="lnr lnr-arrow-right"></span>{{ category.name }}<span
+                  class="number"
+                  >({{ category.subcategory_set.all.count}})</span
+                ></a
+              >
+              <ul
+                class="collapse"
+                id="{{ category.slug }}"
+                data-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="{{ category.slug }}"
+              >
+                {% for subcategory in category.subcategory_set.all %}
+                <li class="main-nav-list child">
+                  <a href="{% update_query_params category=subcategory.id %}"
+                    >{{ subcategory.name }}<span class="number"
+                      >({{ subcategory.article_set.all.count }})</span
+                    ></a
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="sidebar-filter mt-50">
+          <div class="top-filter-head slide-head">Brands Filters</div>
+          <div class="filter-container slide-body">
+            <div class="common-filter">
+              <div class="head">Brands</div>
+              <form
+                class="brands-form"
+                action="{% url 'shopping:shop' %}"
+                method="get"
+              >
+                <ul>
+                  {% for brand in brands %}
+                  <li class="filter-list">
+                    <input class="pixel-radio" type="radio" id="brand_{{ brand.id
+                    }}" name="brand" value="{{ brand.id }}" 
+                    data-url="{% update_query_params brand=brand.id %}" 
+                    {% if request.GET.brand == brand.id|stringformat:"s" %}checked{% endif %} />
+                    <label for="brand_{{ brand.id }}"
+                      >{{ brand.name }}<span class="number">
+                        ({{ brand.article_set.all.count }})</span
+                      ></label
+                    >
+                  </li>
+                  {% endfor %}
+                </ul>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-9 col-lg-8 col-md-7">
+        <!-- Start Filter Bar -->
+        <div class="filter-bar d-flex flex-wrap align-items-center">
+          <!-- sorting select -->
+          <div class="sorting">
+            <select id="nice-select" class="form-select nice-select">
+              <!-- sorting option as links -->
+              <option
+                value="a-to-z"
+                data-url="{% update_query_params sort='atoz' %}"
+              >
+                A to Z
+              </option>
+              <option
+                value="price"
+                data-url="{% update_query_params sort='price' %}"
+              >
+                Price
+              </option>
+              <option
+                value="z-to-a"
+                data-url="{% update_query_params sort='ztoa' %}"
+              >
+                Z to A
+              </option>
+            </select>
+          </div>
+          <!-- Use custom pagination tag to generate pagination context -->
+          {% custom_pagination page_obj as pagination %}
+          <div class="pagination">
+            {% if pagination.has_previous %}
+            <a
+              href="{% update_query_params page=pagination.previous_page_number %}"
+              class="prev-arrow"
+              ><i class="fa fa-long-arrow-left" aria-hidden="true"></i
+            ></a>
+            {% endif %} {% if pagination.current_page > 2 %}
+            <a href="{% update_query_params page=1 %}">1</a>
+            <a href="#" class="dot-dot"
+              ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
+            ></a>
+            {% endif %} {% for page_num in pagination.page_range%}
+            <a
+              href="{% update_query_params page=page_num %}"
+              class="{% if page_num == pagination.current_page %}active{% endif %}"
+              >{{ page_num }}</a
+            >
+            {% endfor %} 
+            {% if pagination.show_last_page %}
+            <a href="#" class="dot-dot"
+              ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
+            ></a>
+            <a href="{% update_query_params page=pagination.last_page %}"
+              >{{ pagination.last_page }}</a
+            >
+            {% endif %} {% if pagination.has_next %}
+            <a
+              href="{% update_query_params page=pagination.next_page_number %}"
+              class="next-arrow"
+              ><i class="fa fa-long-arrow-right" aria-hidden="true"></i
+            ></a>
+            {% endif %}
+          </div>
+          <!-- check if the filter applied -->
+          {% if filter_applied %}
+          <!-- if yes show the clear filter button -->
+          <a
+            href="{% url 'shopping:shop' %}"
+            class="btn btn-success text-white ml-5 mt-3"
+            >Clear Filter</a
+          >
+          {% endif %}
+        </div>
+        <!-- End Filter Bar -->
+        <!-- Start Best Seller -->
+        <section class="lattest-product-area pb-40 category-list">
+          <div class="row article-container">
+            {% for article in page_obj %}
+            <!-- single product -->
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+              <div class="single-product position-relative">
+                {% if article.is_deal_active %}
+                <div class="sold-badge">
+                <span>SOLD</span>
+                </div>
+                {% endif %}
+                <img
+                class="img-fluid shop-img lazyload"
+                data-src="{{ article.images.first.image.url }}"
+                alt="{{ article.name }}"
+                />
+                <div class="product-details">
+                  <h6>{{ article.name }}</h6>
+                  <div class="price">
+                    {% if article.is_deal_active %}
+                    <h6>{{ article.discounted_price }} DA</h6>
+                    <h6 class="l-through">{{ article.wholesale_price }} DA</h6>
+                    {% else %}
+                    <h6>{{ article.wholesale_price }} DA</h6>
+                    {% endif %}
+                    <!-- <h6 class="l-through">$210.00</h6> -->
+                  </div>
+                  <div class="prd-bottom">
+                    <a
+                      href=""
+                      class="social-info add-cart-btn"
+                      data-article-id="{{ article.id }}"
+                    >
+                      <span class="ti-bag"></span>
+                      <p class="hover-text">add to bag</p>
+                    </a>
+                    <!-- <a href="" class="social-info">
+                      <span class="lnr lnr-heart"></span>
+                      <p class="hover-text">Wishlist</p>
+                    </a>
+                    <a href="" class="social-info">
+                      <span class="lnr lnr-sync"></span>
+                      <p class="hover-text">compare</p>
+                    </a> -->
+                    <a
+                      href="{% url 'shopping:article_details' article.slug %}"
+                      class="social-info"
+                    >
+                      <span class="lnr lnr-move"></span>
+                      <p class="hover-text">view more</p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+        <!-- End Best Seller -->
+        <!-- Start Filter Bar -->
+        <div class="filter-bar d-flex flex-wrap align-items-center">
+          <div class="sorting mr-auto">
+            <select id="nice-select" class="nice-select">
+              <option value="6" data-url="{% update_query_params prp=6 %}">
+                Show 6
+              </option>
+              <option value="9" data-url="{% update_query_params prp=9 %}">
+                Show 9
+              </option>
+              <option value="12" data-url="{% update_query_params prp=12 %}">
+                Show 12
+              </option>
+            </select>
+          </div>
+          <div class="pagination">
+            {% if pagination.has_previous %}
+            <a
+              href="{% update_query_params page=pagination.previous_page_number %}"
+              class="prev-arrow"
+              ><i class="fa fa-long-arrow-left" aria-hidden="true"></i
+            ></a>
+            {% endif %} {% if pagination.current_page > 2 %}
+            <a href="{% update_query_params page=1 %}">1</a>
+            <a href="#" class="dot-dot"
+              ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
+            ></a>
+            {% endif %} {% for page_num in pagination.page_range %}
+            <a
+              href="{% update_query_params page=page_num %}"
+              class="{% if page_num == pagination.current_page %}active{% endif %}"
+              >{{ page_num }}</a
+            >
+            {% endfor %} 
+            {% if pagination.current_page < pagination.last_page|add:'-2' %}
+            <a href="#" class="dot-dot"
+              ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
+            ></a>
+            <a href="{% update_query_params page=pagination.last_page %}"
+              >{{ pagination.last_page }}</a
+            >
+            {% endif %} {% if pagination.has_next %}
+            <a
+              href="{% update_query_params page=pagination.next_page_number %}"
+              class="next-arrow"
+              ><i class="fa fa-long-arrow-right" aria-hidden="true"></i
+            ></a>
+            {% endif %}
+          </div>
+          <!-- check if the filter is applied -->
+          {% if filter_applied %}
+          <!-- if yes show the clear filter button -->
+          <a
+            href="{% url 'shopping:shop' %}"
+            class="btn btn-success text-white ml-5 mt-3"
+            >Clear Filter</a
+          >
+          {% endif %}
+        </div>
+      </div>
+      <!-- End Filter Bar -->
+    </div>
+  </div>
+</div>
+<!-- related-product Area -->
+<!-- <section class="related-product-area section_gap">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center">
+        <div class="section-title">
+          <h1>Deals of the Week</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r1.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r2.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r3.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r5.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r6.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r7.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r9.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r10.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="img/r11.jpg" alt="" /></a>
+              <div class="desc">
+                <a href="#" class="title">Black lace Heels</a>
+                <div class="price">
+                  <h6>$189.00</h6>
+                  <h6 class="l-through">$210.00</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="ctg-right">
+          <a href="#" target="_blank">
+            <img
+              class="img-fluid d-block mx-auto"
+              src="img/category/c5.jpg"
+              alt=""
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+{% endblock content %} {% block add_script %} 
+{{ form.max_price.value|default:highest_price|json_script:"max_price" }} 
+{{ form.min_price.value|default:0|json_script:"min_price" }}
+<script>
+  $(function () {
+    // get the min & max price from the created form (declared variables )
+    let minPrice = Number(
+      JSON.parse(document.getElementById("min_price").textContent)
+    );
+    let maxPrice = Number(
+      JSON.parse(document.getElementById("max_price").textContent)
+    );
+    // get the highest price
+    let highestPrice = Number($("#highest-price").val());
+    // NO UI Slider
+    if (document.getElementById("price-range")) {
+      let nonLinearSlider = document.getElementById("price-range");
+
+      noUiSlider.create(nonLinearSlider, {
+        connect: true,
+        behaviour: "tap",
+        start: [minPrice, maxPrice],
+        range: {
+          // Starting at 500, step the value by 500,
+          // until 4000 is reached. From there, step by 1000.
+          min: [0],
+          "10%": [200, 10],
+          "50%": [5000, 100],
+          max: [highestPrice],
+        },
+      });
+
+      var nodes = [
+        document.getElementById("lower-value"), // 0
+        document.getElementById("upper-value"), // 1
+      ];
+
+      // Display the slider value and how far the handle moved
+      // from the left edge of the slider.
+      nonLinearSlider.noUiSlider.on(
+        "update",
+        function (values, handle, unencoded, isTap, positions) {
+          // each price range change update the range container & min, max price holder inputs
+          nodes[handle].innerHTML = values[handle];
+          $("input[name=min_price]").val(values[0]);
+          $("input[name=max_price]").val(values[1]);
+        }
+      );
+    }
+  });
+  // for brand radios listen to change event 
+  document.querySelectorAll(".pixel-radio").forEach(function (element) {
+    element.addEventListener("change", function () {
+      // define the url stored in data-url attribute 
+      let url = $(this).data("url");
+      // reload page with efined url 
+      window.location.href = url;
+    });
+  });
+  // Shopping Cart function
+  // define add cart btn
+  let addCartBtn = $(".add-cart-btn");
+  // define cart badges (deskotp mobile)
+  let mobileCartBadge = $(".mobile-cart-badge");
+  let desktopCartBadge = $(".desktop-cart-badge");
+  // define message container & hide it 
+  let msg_container = $(".message-container");
+  msg_container.hide();
+  // invoke function when add cart btn is clicked
+  addCartBtn.on("click", function (e) {
+    // prevent link default
+    e.preventDefault();
+    // define product ID from add cart btn value (clicked product ID)
+    let articleId = $(this).data("article-id");
+    // create ajax request
+    $.ajax({
+      type: "POST",
+      url: "{% url 'shopping:add_card' %}",
+      // send data
+      data: {
+        // clicked product ID
+        articleId: articleId,
+        // action to post request
+        action: "post",
+      },
+      // send csrf token with request header
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      // in case success
+      success: function (json) {
+        // get cart length from json response
+        let cartLength = json.length;
+        // set the badges values to cart length
+        mobileCartBadge.text(cartLength);
+        desktopCartBadge.text(cartLength);
+        // check if success 
+        if (json.success) {
+          // if yes, show message container with details (message, class)
+          msg_container.show();
+          msg_container.find("h4").text(json.message);
+          msg_container.attr("class" ,"alert-success message-container");
+        } else {
+          // if not, show message container with error details 
+          msg_container.show();
+          msg_container.find("h4").text(json.message);
+          msg_container.attr("class", "alert-danger message-container");
+        }
+      },
+      // in case error
+      error: function (xhr, errmesg, err) {
+        // in error, show msg container with error details
+        msg_container.show();
+        msg_container.find("h4").text(err);
+        msg_container.attr("class", "alert-danger message-container");
+      },
+    });
+  });
+   // hide & show filter body
+  let filterHead = $(".slide-head");
+  filterHead.each(function() {
+    $(this).on('click', function() {
+      let filterBody = $(this).siblings('.slide-body');
+      filterBody.slideToggle()
+    })
+  })
+  $('.nice-select').on('change', function() {
+        let selectedUrl = $(this).find('option:selected').data('url');
+        if (selectedUrl) {
+            window.location.href = selectedUrl;
+        } 
+    });
+</script>
+{% endblock %}
