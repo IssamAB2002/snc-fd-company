@@ -12,7 +12,7 @@ from .models import ContactMessage
 def home(request):
     categories = Category.objects.prefetch_related('subcategory_set').all()
     latest_articles = Article.objects.all().order_by('-created_at')[0:8]
-    random_articles = Article.objects.all().order_by('-created_at')[0:8]
+    random_articles = random_slice(Article.objects.all(), 8)
     sold_articles = Article.objects.filter(deal_end_time__gte=timezone.now())
     print(sold_articles)
     banner_art = BannerArticle.objects.all()
