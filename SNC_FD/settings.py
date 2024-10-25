@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'core',
     'users',
     'shopping',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -48,7 +50,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'SNC_FD.urls'
-DEFAULT_CHARSET = 'utf-8'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -122,10 +123,14 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET')
+}
 # Media files (models media)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-print(MEDIA_ROOT)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # add whitenoise's static files storage (whitenoise's management backend)
 # MAKE SURE that u have putted pip install whitenoise in requirements.txt file
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
