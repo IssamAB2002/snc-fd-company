@@ -4,6 +4,11 @@
 {% block message %}{% endblock message %}
 {% block content %}
 {% include 'core/s_banner.html' %}
+{% if orders|length == 0 %}
+<section class="container empty-container d-flex jsutify-content-center align-items-center" style="height: 300px;">
+    <h3>There is No Orders yet</h3>
+</section>
+{% else %}
 <section class="container mt-5 cart-search py-3 px-3">
   <div class="order-search my-3 mx-auto">
     <h5 class="order-search-h5 my-3">Look For Orders</h5>
@@ -16,29 +21,38 @@
 </section>
 <section class="container my-5">
   <div class="orders-container">
-    {% for order in orders %}
-    <div class="card order-card my-2">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        Order ID: #{{ order.id }}
-        {% if not order.is_printed %}<span class="print-badge"></span>{% endif %}</div>
-      <div class="card-body">
-        <h5 class="card-title">
-          <span class="text-capitalize">{{ order.user.first_name }} {{ order.user.last_name }} Order: {{ order.id
-            }}</span>
-        </h5>
-        <p class="card-text">
-        <ul>
-          <li>Order Time: {{ order.created_at }}</li>
-          <li>Order Total: {{ order.total_price }} DA</li>
-          <li>Pick Up Date: {{ order.pickup_date }}</li>
-        </ul>
-        </p>
-        <a href="{% url 'users:admin_order_detail' order.id %}" class="btn primary-btn rounded-0">See Details</a>
+    {% if orders %}
+      {% for order in orders %}
+        <div class="card order-card my-2">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            Order ID: #{{ order.id }}
+            {% if not order.is_printed %}<span class="print-badge"></span>{% endif %}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">
+              <span class="text-capitalize">{{ order.user.first_name }} {{ order.user.last_name }} Order: {{ order.id }}</span>
+            </h5>
+            <p class="card-text">
+              <ul>
+                <li>Order Time: {{ order.created_at }}</li>
+                <li>Order Total: {{ order.total_price }} DA</li>
+                <li>Pick Up Date: {{ order.pickup_date }}</li>
+              </ul>
+            </p>
+            <a href="{% url 'users:admin_order_detail' order.id %}" class="btn primary-btn rounded-0">See Details</a>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-orders alert alert-light text-center p-5">
+        <h4 class="alert-heading">No Orders Yet</h4>
+        <p class="mb-4">It looks like you haven’t placed any orders yet.</p>
+        <a href="{% url 'shopping:shop' %}" class="btn btn-primary">Go to Shop</a>
       </div>
-    </div>
-    {% endfor %}
+    {% endif %}
   </div>
 </section>
+{% endif %}
 {% endblock content %}
 {% block add_script %}
 <script>

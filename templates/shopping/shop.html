@@ -11,6 +11,9 @@
   <span class="lnr lnr-cross msg-dismiss-btn"></span>
 </div>
 {% endblock message %} {% block content %}
+<div id="loading-spinner" class="loading-spinner">
+  <div class="spinner-icon"></div>
+</div>
 <div style="padding-top: 150px;">
   <div class="container shop-container mb-5 ">
     <div class="row">
@@ -215,6 +218,7 @@
                 class="img-fluid shop-img lazyload"
                 data-src="{{ article.images.first.image.url }}"
                 alt="{{ article.name }}"
+                onerror="this.onerror=null; this.src='{% static 'img/default-product.png' %}';"
                 />
                 <div class="product-details">
                   <h6>{{ article.name }}</h6>
@@ -468,7 +472,15 @@
 {{ form.max_price.value|default:highest_price|json_script:"max_price" }} 
 {{ form.min_price.value|default:0|json_script:"min_price" }}
 <script>
+  const showLoadingSpinner = () => {
+      document.getElementById("loading-spinner").style.visibility = "visible";
+    }
+    // hide loading spinner
+    const hideLoadingSpinner = () => {
+      document.getElementById("loading-spinner").style.visibility = "hidden";
+    }
   $(function () {
+    
     // get the min & max price from the created form (declared variables )
     let minPrice = Number(
       JSON.parse(document.getElementById("min_price").textContent)
@@ -543,6 +555,9 @@
       type: "POST",
       url: "{% url 'shopping:add_card' %}",
       // send data
+      beforeSend: () => {
+        showLoadingSpinner();
+      },
       data: {
         // clicked product ID
         articleId: articleId,
@@ -580,6 +595,9 @@
         msg_container.find("h4").text(err);
         msg_container.attr("class", "alert-danger message-container");
       },
+      complete: () => {
+        hideLoadingSpinner();
+      }
     });
   });
    // hide & show filter body

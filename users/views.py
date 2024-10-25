@@ -276,20 +276,15 @@ def create_order(request):
     # import request session cart
     cart = Cart(request)
     # Check if user is allowed to order
-    # check if user email is verified
-    if not request.user.email_verified:
-        if not request.user.phone_verified:
-            messages.error(request, 'Please Verify your Email or your Phone Number, So you place order !')
-            return redirect('users:dashboard')
+    # check if user phone number is verified
+    if not request.user.phone_verified:
+        messages.error(request, 'Please Verify your Phone Number, So you place order !')
+        return redirect('users:dashboard')
     # check if time within the allowed time range
-    """ if not is_within_allowed_time():
+    if not is_within_allowed_time():
         messages.error(
             request, 'Orders can only be placed between 6 AM and 5 PM.')
-        return redirect('shopping:card_details') """
-    
-    # rocipi7975@hapied.com walid
-    # codeka5204@ndiety.com youcef
-    # kaxadox710@hapied.com mohamed
+        return redirect('shopping:card_details')
     # get allowed and wait time from can place order
     allowed, wait_time = can_place_order(request.user, wait_hours=2)
     if not allowed:
