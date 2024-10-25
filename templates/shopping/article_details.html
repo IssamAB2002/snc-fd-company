@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %} 
+{% extends 'core/base.html' %}
 {% load static %} 
 {% block title %}{{ title }}{% endblock title %} 
 {% include 'core/s_banner.html' %} 
@@ -8,6 +8,9 @@
   <span class="lnr lnr-cross msg-dismiss-btn"></span>
 </div>
 {% endblock message %} {% block content %}
+<div id="loading-spinner" class="loading-spinner">
+  <div class="spinner-icon"></div>
+</div>
 <!-- single product area -->
 <div class="product_image_area">
   <div class="container">
@@ -18,7 +21,8 @@
           <img
             class="img-fluid w-100 h-100 product-details-img"
             src="{{ article_images.first.image.url }}"
-            alt=""
+            alt="{{ article.name }}"
+            onerror="this.onerror=null; this.src='{% static 'img/default-product.png' %}';"
           />
         </div>
         {% else %}
@@ -595,6 +599,14 @@
 {% endblock content %} {% block add_script %}
 <script>
   $(document).ready(function () {
+	// show loading function
+    function showLoadingSpinner() {
+      document.getElementById("loading-spinner").style.visibility = "visible";
+    }
+    // hide loading spinner
+    function hideLoadingSpinner() {
+      document.getElementById("loading-spinner").style.visibility = "hidden";
+    }
     // define add cart btn
     let addCartBtn = $(".add-cart-btn");
     let mobileCartBadge = $(".mobile-cart-badge");
@@ -616,6 +628,9 @@
       $.ajax({
         type: "POST",
         url: "{% url 'shopping:add_card' %}",
+		beforeSend: () => {
+			showLoadingSpinner();
+		},
         data: {
           // product ID
           articleId: articleId,
@@ -629,19 +644,16 @@
           "X-CSRFToken": "{{ csrf_token }}",
         },
         success: function (json) {
-          console.log(json);
           // get cart length from json response
           let cartLength = json.length;
           // set the badge value to cart length
           mobileCartBadge.text(cartLength);
           desktopCartBadge.text(cartLength);
           if (json.success) {
-            console.log("success");
             msg_container.show();
             msg_container.find("h4").text(json.message);
             msg_container.attr("class", "alert-success message-container");
           } else {
-            console.log("error");
             msg_container.show();
             msg_container.find("h4").text(json.message);
             msg_container.attr("class", "alert-danger message-container");
@@ -656,6 +668,9 @@
           msg_container.find("h4").text(err);
           msg_container.attr("class", "alert-danger message-container");
         },
+		complete: () => {
+			hideLoadingSpinner();
+		}
       });
     });
   });
