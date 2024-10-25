@@ -22,80 +22,54 @@
     <div class="row fullscreen align-items-center justify-content-start">
       <div class="col-lg-12">
         <div class="active-banner-slider owl-carousel">
-          <!-- single-slide -->
-          <div
-            class="row single-slide align-items-center d-flex flex-nowrap banner-holder"
-          >
-            <div class="col-lg-5 col-md-6">
-              <div class="banner-content">
-                <h1>Nike New <br />Collection!</h1>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation.
-                </p>
-                <p class="s-desc">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Culpa, in.
-                </p>
-                <div class="add-bag d-flex align-items-center">
-                  <a class="add-btn" href=""
-                    ><span class="lnr lnr-cross"></span
-                  ></a>
-                  <span class="add-text text-uppercase">Add to Bag</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-7">
-              <div class="banner-img">
-                <img
-                  class="img-fluid lazyload"
-                  data-src="{% static 'img/banner/banner-img.png' %}"
-                  alt=""
-                />
-              </div>
-            </div>
-          </div>
-          <!-- single-slide -->
-          <div
-            class="row single-slide align-items-center d-flex flex-nowrap banner-holder"
-          >
-            <div class="col-lg-5 col-md-6">
-              <div class="banner-content">
-                <h1>Gucci New <br />Collection!</h1>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation.
-                </p>
-                <p class="s-desc">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Culpa, in.
-                </p>
-                <div class="add-bag d-flex align-items-center">
-                  <a class="add-btn" href=""
-                    ><span class="lnr lnr-cross"></span
-                  ></a>
-                  <span class="add-text text-uppercase">Add to Bag</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-7">
-              <div class="banner-img">
-                <img
-                  class="img-fluid"
-                  src="{% static 'img/banner/—Pngtree—wrench tools_7517107.png' %}"
-                  alt=""
-                />
-              </div>
-            </div>
-          </div>
+          <!-- Show two standard slides if there are less than 2 articles -->
+          {% if banner_articles|length < 2 %}
+            <!-- Standard Slide 1 -->
+            <div class="row single-slide align-items-center d-flex flex-nowrap banner-holder">
+              <div class="col-lg-5 col-md-6">
+                <div class="banner-content">
+                  <h1>Top-Quality Tools <br />At SNC FD!</h1>
+                  <p>Discover a wide range of reliable, durable hardware tools and supplies designed to help you tackle any job, big or small. Trust SNC FD for all your wholesale hardware needs.</p>
+                  <p class="s-desc">Stocking the best for professionals and DIY enthusiasts alike.</p>
+                  <div class="add-bag d-flex align-items-center">
+                    <a class="add-btn" href="{% url 'shopping:shop' %}"><span class="lnr lnr-cross"></span></a>
+                    <span class="add-text text-uppercase">Explore Tools</span>
+                  </div> <!-- .add-bag -->
+                </div> <!-- .banner-content -->
+              </div> <!-- .col-lg-5 -->
 
+              <div class="col-lg-7">
+                <div class="banner-img">
+                  <!-- Image tag removed to prevent design collapse -->
+                </div> <!-- .banner-img -->
+              </div> <!-- .col-lg-7 -->
+            </div> <!-- .single-slide -->
+
+            <!-- Standard Slide 2 -->
+            <div class="row single-slide align-items-center d-flex flex-nowrap banner-holder">
+              <div class="col-lg-5 col-md-6">
+                <div class="banner-content">
+                  <h1>Wholesale Hardware <br />at SNC FD!</h1>
+                  <p>Your go-to supplier for all hardware essentials, from hand tools to power tools and everything in between. SNC FD has you covered with quality products at unbeatable prices.</p>
+                  <p class="s-desc">Equip yourself with tools you can trust, all in one place.</p>
+                  <div class="add-bag d-flex align-items-center">
+                    <a class="add-btn" href="{% url 'shopping:shop' %}"><span class="lnr lnr-cross"></span></a>
+                    <span class="add-text text-uppercase">Shop Now</span>
+                  </div> <!-- .add-bag -->
+                </div> <!-- .banner-content -->
+              </div> <!-- .col-lg-5 -->
+
+              <div class="col-lg-7">
+                <div class="banner-img">
+                  <!-- Image tag removed to prevent design collapse -->
+                </div> <!-- .banner-img -->
+              </div> <!-- .col-lg-7 -->
+            </div> <!-- .single-slide -->
+          
+          {% endif %}
           {% for article in banner_articles %}
           <!-- single-slide -->
-          <div
-            class="row single-slide align-items-center d-flex flex-nowrap banner-holder"
-          >
+          <div class="row single-slide align-items-center d-flex flex-nowrap banner-holder">
             <div class="col-lg-5 col-md-6">
               <div class="banner-content">
                 <h1>{{ article.title }}</h1>
@@ -103,28 +77,31 @@
                 <div class="add-bag d-flex align-items-center">
                   <a
                     class="add-btn"
-                    href="{% url 'shopping:article_details' article.article.slug %}"
-                    ><span class="lnr lnr-cross"></span
-                  ></a>
+                    href="{% url 'shopping:article_details' article.slug %}"
+                  >
+                    <span class="lnr lnr-cross"></span>
+                  </a>
                   <span class="add-text text-uppercase">Add to Bag</span>
-                </div>
-              </div>
-            </div>
+                </div> <!-- .add-bag -->
+              </div> <!-- .banner-content -->
+            </div> <!-- .col-lg-5 -->
+
             <div class="col-lg-7">
               <div class="banner-img">
                 <img
                   class="img-fluid lazyload"
-                  data-src="{{ article.article.images.first.image.url }}"
+                  data-src="{{ article.images.first.image.url }}"
                   alt=""
                 />
-              </div>
-            </div>
-          </div>
+              </div> <!-- .banner-img -->
+            </div> <!-- .col-lg-7 -->
+          </div> <!-- .single-slide -->
           {% endfor %}
-        </div>
-      </div>
-    </div>
-  </div>
+
+        </div> <!-- .active-banner-slider -->
+      </div> <!-- .col-lg-12 -->
+    </div> <!-- .row -->
+  </div> <!-- .container -->
 </section>
 <!-- start features area -->
 <section class="features-area section_gap">

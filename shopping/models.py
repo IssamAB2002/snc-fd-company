@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import QuerySet 
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
 
 # create category model
 class Category(models.Model):
@@ -24,7 +25,7 @@ class SubCategory(models.Model):
 
 # create article images model
 class ArticleImage(models.Model):
-    image = models.ImageField(upload_to='article_images')
+    image = CloudinaryField('images')
     article_id = models.ForeignKey(
         'Article', on_delete=models.CASCADE, related_name='article_images')
     
