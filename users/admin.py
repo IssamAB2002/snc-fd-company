@@ -12,7 +12,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_staff', 'is_superuser', 'is_active')
     # Fieldsets for the admin change view
     fieldsets = (
-        (None, {'fields': ('email', 'phone_number','first_name', 'last_name', 'state', 'city', 'street','sec_phone_number' , 'email_verified','phone_verified','password')}),  # Basic info
+        (None, {'fields': ('email', 'phone_number','first_name', 'last_name', 'state', 'city', 'street','sec_phone_number', 'is_manager', 'email_verified','phone_verified','password')}),  # Basic info
         ('Permissions', {'fields': ('is_staff', 'is_active',  # Permissions
          'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login',)}),  # Last login
