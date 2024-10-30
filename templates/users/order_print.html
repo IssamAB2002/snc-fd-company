@@ -1,8 +1,8 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-     <meta charset="UTF-8" />
+  <head>
+    <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Order Print</title>
@@ -25,117 +25,131 @@
       crossorigin="anonymous"
     ></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 50%;
+        width: 340px;
+        margin: 0 auto;
+        padding: 10px;
+        position: relative;
+        font-size: 13px;
+      }
 
-        .header {
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: left;
-            position: relative;
-            padding-bottom: 20px;
-        }
+      .header {
+        width: 100%;
+        text-align: left;
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding-bottom: 20px;
+      }
 
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
+      .header h1 {
+        font-size: 20px;
+        margin-bottom: 5px;
+      }
 
-        .header p {
-            margin: 0;
-        }
+      .header p {
+        margin: 0;
+      }
+      .items-container {
+        margin-top: 160px;
+      }
 
-        .order-summary {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            page-break-inside: auto;
-        }
+      .order-summary {
+        margin-top: 20px;
+        width: 100%;
+        border-collapse: collapse;
+        page-break-inside: auto;
+      }
 
-        .order-summary th, .order-summary td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
+      .order-summary th,
+      .order-summary td {
+        border-right: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+      }
 
-        .order-summary th {
-            background-color: #f2f2f2;
-        }
+      .order-summary th {
+        background-color: #f2f2f2;
+      }
 
-        .order-summary td {
-            vertical-align: middle;
-        }
+      .order-summary td {
+        vertical-align: middle;
+      }
 
-        .checkbox {
-            width: 16px;
-            height: 16px;
-            border: 1px solid #000;
-            display: inline-block;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        @media print {
-        body {
-            position: relative;
-            width: 500px;
-            max-width: 500px; /* Enforce maximum width for the print document */
-            margin: 0 auto; /* Center the document horizontally */
-            padding: 20px;
-            box-sizing: border-box;
-        }
-    }
+      .checkbox {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #000;
+        display: inline-block;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+      .qnt {
+        text-align: center;
+        width: 40px !important;
+        max-width: 40px !important;
+        padding: 2px;
+        font-size: 1rem;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Header Section -->
-    <div class="header row">
-        <h1>Order ID: {{ order.id }}</h1>
-        <div class="col col-6 mx-2">
-            <p><strong>Placed by:</strong> <span class="text-capitalize">{{ order.user.first_name }} {{ order.user.last_name }}</span></p>
-            <p><strong>Date:</strong> {{ order.created_at }}</p>
-            <p><strong>Total:</strong> {{ order.total_price }} DA</p>
+    <div class="header">
+      <h1>Order ID: {{ order.id }}</h1>
+      <div class="d-flex g-3">
+        <div class="col">
+          <p>
+            <strong>Placed by:</strong>
+            <span class="text-capitalize"
+              >{{ order.user.first_name }} {{ order.user.last_name }}</span
+            >
+          </p>
+          <p><strong>Date:</strong> {{ order.created_at }}</p>
+          <p><strong>Total:</strong> {{ order.total_price }} DA</p>
         </div>
-        <div class="col col-6 mx-2">
-            <p><strong>User Phone Number</strong> <span class="text-capitalize">{{ order.user.phone_number }}</span></p>
-            <p><strong>Pick Up Date:</strong> {{ order.pickup_date }}</p>
-            <p><strong>Address:</strong> {{ order.user.full_address }}</p>
+        <div class="col">
+          <p>
+            <strong>User Phone Number</strong>
+            <span class="text-capitalize">{{ order.user.phone_number }}</span>
+          </p>
+          <p><strong>Pick Up Date:</strong> {{ order.pickup_date }}</p>
+          <p><strong>Address:</strong> {{ order.user.full_address }}</p>
         </div>
+      </div>
     </div>
 
     <!-- Order Items Section -->
-    <h2>Items</h2>
-    <table class="order-summary">
+    <div class="items-container">
+      <h2>Items</h2>
+      <table class="order-summary">
         <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
+          <tr>
+            <th>Product</th>
+            <th class="">Qnt</th>
+            <th>Price</th>
+          </tr>
         </thead>
         <tbody>
-            {% for item in order.items.all %}
-                <tr>
-                    <td class="text-capitalize">
-                        <div class="checkbox"></div>
-                        {{ item.article.name }}
-                    </td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.price }} DA</td>
-                </tr>
-            {% endfor %}
+          {% for item in order.items.all %}
+          <tr>
+            <td class="text-capitalize">
+              <div class="checkbox"></div>
+              {{ item.article.name }}
+            </td>
+            <td class="qnt text-center">{{ item.quantity }}</td>
+            <td>{{ item.price }} DA</td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
-
+      </table>
+    </div>
     <script>
-        // Automatically trigger the print dialog
-        window.print();
+      // Automatically trigger the print dialog
+      window.print();
     </script>
-</body>
+  </body>
 </html>
