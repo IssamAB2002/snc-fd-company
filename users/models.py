@@ -1,9 +1,12 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now, timedelta
 from django.core.mail import send_mail
 from django.conf import settings
+from twilio.rest import Client
 from shopping.models import Article
+from users.local import *
 
 ALGERIAN_WILAYAS = [
     ('Adrar', 'Adrar'),
@@ -75,9 +78,11 @@ class UserManager(BaseUserManager):
         if not email and not phone_number:
             raise ValueError(
                 'Users must have an email address or phone number')
-        user = self.model(email=email, phone_number=phone_number)
-        user.set_password(password)  # Hash the password
-        user.save(using=self._db)  # Save the user object in the database
+        user = self.model(**extra_fields)  
+        user.email = email
+        user.phone_number = phone_number
+        user.set_password(password)  
+        user.save(using=self._db)  
         return user
 
     # Method to create a superuser
@@ -119,9 +124,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     # field to check if the user is a manager
     is_manager = models.BooleanField(default=False)
+    can_post_orders = models.BooleanField(default=False)
     # fields to check if the user's email & phone is verified
     email_verified = models.BooleanField(default=False)
     phone_verified = models.BooleanField(default=False)
+    # verification tokens
+    email_verification_code = models.CharField(max_length=6, null=True, blank=True)
+    email_code_expires_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
+    password_reset_code = models.CharField(max_length=6, null=True, blank=True)
+    password_code_expires_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
     # Specify the custom manager
     objects = UserManager()
     # Use email as the username field
@@ -141,10 +152,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, **kwargs):
         send_mail(subject, message, settings.EMAIL_HOST_USER,
                   [self.email], **kwargs)
-
-    def send_sms(self, message):
-        pass
-
+        
     def has_module_perms(self, app_label):
         # Admins have permissions for all modules
         return self.is_admin
@@ -161,20 +169,41 @@ class User(AbstractBaseUser, PermissionsMixin):
                 self.phone_verified = False
 
         super(User, self).save(*args, **kwargs)
+
     def full_address(self):
         return f'{self.state}, {self.city}, {self.street}'
+    
+    # tokens validation handling
+    def generate_verification_code(self):
+        import random
+        return f"{random.randint(100000, 999999)}"
+
+    def set_verification_codes(self):
+        email_code = self.generate_verification_code()
+        self.email_verification_code = email_code
+        self.email_code_expires_at = now() + timedelta(minutes=60)
+    
+    def set_password_reset_code(self):
+        password_code = self.generate_verification_code()
+        self.password_reset_code = password_code
+        self.password_code_expires_at = now() + timedelta(minutes=60)
+
+    def is_code_valid(self, personal_code, code, expiry):
+        return (
+            personal_code == code and
+            expiry and
+            expiry > now()
+        )
+        
 # create order model
-
-
 class Order(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='orders')
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
-    update_times = models.PositiveIntegerField()
+    update_times = models.PositiveIntegerField(null=True, blank=True)
     is_sent = models.BooleanField(default=False)
-    pickup_date = models.DateField(null=False, blank=False)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     is_printed = models.BooleanField(default=False)
     def __str__(self):
         return f"Order {self.id} by {self.user.first_name} {self.user.last_name}"

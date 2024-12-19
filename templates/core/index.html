@@ -77,7 +77,11 @@
                 <div class="add-bag d-flex align-items-center">
                   <a
                     class="add-btn"
-                    href="{% url 'shopping:article_details' article.slug %}"
+                    {% if article.article_set.first is not None %}
+                      href="{% url 'shopping:article_details' article.slug %}"
+                    {% else %}
+                      href="{% url 'shopping:shop' %}"  
+                    {% endif %}
                   >
                     <span class="lnr lnr-cross"></span>
                   </a>
@@ -90,7 +94,11 @@
               <div class="banner-img">
                 <img
                   class="img-fluid lazyload"
-                  data-src="{{ article.images.first.image.url }}"
+                  {% if article.article_set.first.images.first.image.url %}
+                    data-src="{{ article.article_set.first.images.first.image.url }}"
+                  {% else %}
+                    data-src="{{ article.image.url }}"
+                  {% endif %}
                   alt=""
                 />
               </div> <!-- .banner-img -->

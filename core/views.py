@@ -14,11 +14,13 @@ def home(request):
     latest_articles = Article.objects.all().order_by('-created_at')[0:8]
     random_articles = random_slice(Article.objects.all(), 8)
     sold_articles = Article.objects.filter(deal_end_time__gte=timezone.now())
-    print(sold_articles)
     banner_art = BannerArticle.objects.all()
+    # check fot the active articles
+    active_art = banner_art.filter(is_active=True)
+    print(active_art)
     context = {
         'title': 'Home',
-        'banner_articles': banner_art,
+        'banner_articles': active_art,
         'sold_articles': sold_articles,
         'latest_articles': latest_articles,
         'random_articles': random_articles,

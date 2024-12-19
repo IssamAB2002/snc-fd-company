@@ -6,6 +6,7 @@ from .models import Order
 from django.utils import timezone
 from datetime import timedelta, datetime
 import datetime
+import random
 from django.utils.encoding import force_bytes, force_str
 
 
@@ -66,3 +67,8 @@ def can_place_order(user, wait_hours=2):
 def is_within_allowed_time(start_hour=6, end_hour=17):
     current_time = datetime.datetime.now()
     return start_hour <= current_time.hour < end_hour
+
+def generate_phone_verification_token():
+    # generate verification token
+    phone_verification_token = str(random.randint(100000, 999999))
+    return phone_verification_token
