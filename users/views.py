@@ -27,7 +27,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.utils import timezone
 # import activation token generator
-from .utils import account_activation_token, inform_managers, can_place_order, is_within_allowed_time
+from .utils import *
 # import manager required decorator 
 from .decorators import manager_required
 # import send mail function
@@ -210,19 +210,13 @@ def verify_phonenumber(request):
         # define the client variable (admin)
         client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
-        # generate verification token
-        phone_verification_token = str(random.randint(100000, 999999))
+        phone_verification_token = generate_phone_verification_token()
         # stor verification token in session
         request.session['verification_token'] = phone_verification_token
         # set expiry time (5 minutes) for security
         request.session['verification_expiry'] = time.time() + 300
         try:
-            # create verification including user's phone number
-            verification = client.messages.create(
-                body=f"Your Verification Code is {phone_verification_token}",
-                from_=TWILIO_PHONE_NUMBER,
-                to=phone_number
-            )
+            user.send_sms(phone_verification_token=phone_verification_token)
             # redirect to verfication form
             return render(request, 'users/verification_form.html', {'status': 'Verification code sent'})
         # make error if it didn't work
@@ -294,7 +288,7 @@ def create_order(request):
         # inform user must wait (wait time)
         messages.error(
             request, f'You must wait {int(wait_hours)} h and {int(wait_minutes)} m before placing order again')
-        return redirect('shopping:card_details')
+        return redirect('shopping:card_details') 
     # if is allowed check if cart has article
     if len(cart) == 0:
         # if not seend message to user
@@ -355,8 +349,6 @@ def create_order(request):
 @manager_required
 def admin_order_list(request):
     orders = Order.objects.all().order_by('-created_at')
-    for order in orders:
-        print(order.is_printed)
     return render(request, 'users/admin_orders_view.html', {'title': 'Orders View', 'orders': orders})
 
 # define order details view
