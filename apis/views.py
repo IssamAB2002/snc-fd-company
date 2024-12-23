@@ -22,7 +22,7 @@ from shopping.models import Article
 # def the custom token provider view
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
+    
 # def the user data provider view 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
