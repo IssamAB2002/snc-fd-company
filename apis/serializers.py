@@ -13,15 +13,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         username = attrs.get(self.username_field)
         password = attrs.get('password')
-
+        # debug print
+        print(f'Username: {username}')
+        print(f'Password: {password}')
         # Use the custom backend to authenticate
+        print('checking user authentication')
         user = authenticate(request=self.context.get('request'), username=username, password=password)
-
-        if not user:
+        if not user:    
+            print('user not found')            
             # Debugging hints to track the issue
             if not User.objects.filter(email=username).exists() and not User.objects.filter(phone_number=username).exists():
+                print('invalid username')
                 raise serializers.ValidationError('User not found with the provided username.')
             else:
+                print('wrong password')
                 raise serializers.ValidationError('Invalid credentials. Please try again.')
 
         # Generate tokens using the parent class
@@ -61,6 +66,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             street=validated_data.get('street'),
             sec_phone_number=validated_data.get('sec_phone_number'),
         )
+        print("user's data fetched !")
         print(f'Email: {user.email}')
         print(f'Phone Number: {user.phone_number}')
         print(f'First Name: {user.first_name}')
