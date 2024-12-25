@@ -13,20 +13,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         username = attrs.get(self.username_field)
         password = attrs.get('password')
-        # debug print
-        print(f'Username: {username}')
-        print(f'Password: {password}')
         # Use the custom backend to authenticate
-        print('checking user authentication')
         user = authenticate(request=self.context.get('request'), username=username, password=password)
         if not user:    
-            print('user not found')            
             # Debugging hints to track the issue
             if not User.objects.filter(email=username).exists() and not User.objects.filter(phone_number=username).exists():
-                print('invalid username')
                 raise serializers.ValidationError('User not found with the provided username.')
             else:
-                print('wrong password')
                 raise serializers.ValidationError('Invalid credentials. Please try again.')
 
         # Generate tokens using the parent class
@@ -134,7 +127,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'user_name', 'created_at', 'total_price', 'items']
+        fields = ['id', 'user', 'user_name', 'created_at', 'total_price', 'items', 'is_sent']
         read_only_fields = ['created_at', 'total_price']  # These are not required for creation
 
     def get_items(self, obj):
