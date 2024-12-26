@@ -174,14 +174,13 @@ class OrderAPIView(APIView):
             wait_hours = wait_time.total_seconds() // 3600
             wait_minutes = (wait_time.total_seconds() % 3600) // 60
         # inform user must wait (wait time)
-            return Response({'error': f'You must wait {int(wait_hours)} h and {int(wait_minutes)} m before placing order again'}) 
+            return Response({'error': f'You must wait {int(wait_hours)} h and {int(wait_minutes)} m before placing order again'}, status=status.HTTP_400_BAD_REQUEST) 
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
             order = serializer.save()
             return Response(
                 {
                     "message": "Order created successfully.",
-                    "order": serializer.data
                 },
                 status=status.HTTP_201_CREATED
             )
