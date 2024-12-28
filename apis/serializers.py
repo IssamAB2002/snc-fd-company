@@ -24,13 +24,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Generate tokens using the parent class
         data = super().validate(attrs)
-
         # Add additional user details to the response
         data['email'] = user.email
         data['phone_number'] = user.phone_number
         data['first_name'] = user.first_name
         data['last_name'] = user.last_name
-
         return data
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
