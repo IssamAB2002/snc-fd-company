@@ -16,5 +16,6 @@ urlpatterns = [
     path('article/', ArticleListView.as_view(), name='artilce'),
     path('category/', CategoryListView.as_view(), name='category'),
     path('orders/', OrderAPIView.as_view(), name='order-list'),  
-    path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail')
+    path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('version/' , get_latest_apk, name='version'),
 ]

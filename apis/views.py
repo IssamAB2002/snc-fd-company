@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 # import token obtainer view
 from rest_framework_simplejwt.views import TokenObtainPairView
 # import permession 
@@ -12,6 +13,7 @@ from rest_framework import status, generics
 import random
 # import custom serializers 
 from .serializers import * 
+from .models import AndroidApp
 from users.utils import generate_phone_verification_token
 from users.models import User
 from users.utils import is_within_allowed_time, can_place_order
@@ -190,6 +192,14 @@ class OrderDetailView(generics.RetrieveAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     
+def get_latest_apk(request):
+    latest_app = AndroidApp.objects.order_by('-uploaded_at').first()
+    if latest_app:
+        return JsonResponse({
+            "version": latest_app.version,
+            # "apk_url": request.build_absolute_uri(latest_app.apk_file.url),
+        })
+    return JsonResponse({"error": "No APK available"}, status=404)
 
 
     
