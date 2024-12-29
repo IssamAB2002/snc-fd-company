@@ -18,4 +18,5 @@ urlpatterns = [
     path('orders/', OrderAPIView.as_view(), name='order-list'),  
     path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
     path('version/' , get_latest_apk, name='version'),
+    path('version-page', app_download_page, name='android-app-page'),
 ]

@@ -57,12 +57,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             street=validated_data.get('street'),
             sec_phone_number=validated_data.get('sec_phone_number'),
         )
-        print("user's data fetched !")
-        print(f'Email: {user.email}')
-        print(f'Phone Number: {user.phone_number}')
-        print(f'First Name: {user.first_name}')
-        print(f'Last Name: {user.last_name}')
-        print(f'Password: {user.password}')
         if user.last_name:
             print(f'{user.last_name} Joined us')
         else: 

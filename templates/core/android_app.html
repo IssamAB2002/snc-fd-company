@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5" style='min-height: 500px;'>
+  <div class="row align-items-center">
+    <!-- Phone Image Section -->
+    <div class="col-md-6 text-center">
+      <img 
+        src="{% static 'img/snc-fd-mobile-app.png' %}" 
+        alt="Phone Mockup" 
+        class="img-fluid"
+        style="max-height: 400px;" 
+      />
+    </div>
+
+    <!-- App Description and Download Section -->
+    <div class="col-md-6">
+      <h1 class="mb-3">Download Our App</h1>
+      <p class="mb-4">
+        Experience the best features of our app. Stay updated with the latest products, 
+        services, and news directly at your fingertips. Download now and start exploring!
+      </p>
+
+      <!-- Download Button -->
+      {% if app_version %}
+      {% if app_version.apk_file.url is not None %}
+      <a 
+        href="{{ app_version.apk_file.url }}" 
+        class="btn btn-primary btn-lg"
+        download
+      >
+        Download Latest Version ({{ app_version.version }})
+      </a>
+      {% endif %}
+      {% else %}
+      <p class="text-danger">No app version available at the moment. Please check back later!</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
