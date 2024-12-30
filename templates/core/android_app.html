@@ -1,15 +1,16 @@
 {% extends "core/base.html" %}
 {% load static %}
+{% block title %}Android App{% endblock title %}
 {% block content %}
-<div class="container mt-5" style='min-height: 500px;'>
+<div class="container">
   <div class="row align-items-center">
     <!-- Phone Image Section -->
-    <div class="col-md-6 text-center">
+    <div class="col-md-6 text-center" style='margin-top: 100px'>
       <img 
         src="{% static 'img/snc-fd-mobile-app.png' %}" 
         alt="Phone Mockup" 
         class="img-fluid"
-        style="max-height: 400px;" 
+        style="max-height: 600px;" 
       />
     </div>
 
@@ -31,9 +32,9 @@
       >
         Download Latest Version ({{ app_version.version }})
       </a>
-      {% endif %}
       {% else %}
       <p class="text-danger">No app version available at the moment. Please check back later!</p>
+      {% endif %}
       {% endif %}
     </div>
   </div>
