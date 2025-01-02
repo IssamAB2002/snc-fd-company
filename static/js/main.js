@@ -77,8 +77,8 @@ $(document).ready(function () {
     loop: true,
     nav: true,
     navText: [
-      "<img src='static/img/product/prev.png'>",
-      "<img src='static/img/product/next.png'>",
+      "<img src='static/img/banner/prev.png'>",
+      "<img src='static/img/banner/next.png'>",
     ],
     dots: false,
   });

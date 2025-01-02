@@ -201,5 +201,9 @@ def get_latest_apk(request):
         })
     return JsonResponse({"error": "No APK available"}, status=404)
 
+def app_download_page(request):
+    latest_version = AndroidApp.objects.order_by('-id').first()  # Fetch the latest version
+    return render(request, 'core/android_app.html', {'app_version': latest_version})
+
 
     

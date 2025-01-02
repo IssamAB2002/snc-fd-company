@@ -136,6 +136,11 @@
                       >
                     </li>
                     {% endif %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'api:android-app-page' %}"
+                        >Get SNC FD App</a
+                      >
+                    </li>
                   </ul>
                 </li>
                 <li class="nav-item">
@@ -327,9 +332,9 @@
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/countdown.js' %}"></script>
     <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/nouislider.min.js' %}"></script>
     <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
     {% block add_script %}{% endblock add_script %}
   </body>
 </html>
