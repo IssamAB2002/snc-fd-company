@@ -7920,3 +7920,7 @@ input[type="number"] {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.primary-btn {
+  border-radius: 0 !important;
+}
