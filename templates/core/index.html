@@ -204,6 +204,15 @@
         </div>
       </div>
       <div class="row">
+        {% if latest_articles|length == 0 %}
+        <div class="col-12 text-center">
+            <div style="height: 200px; display: flex; align-items: center; justify-content: center; border: 2px dashed #ccc; background-color: #f9f9f9;">
+              <p style="font-size: 1.5rem; font-weight: bold; color: #555;">
+                There are no articles in the store yet.
+              </p>
+            </div>
+          </div>
+        {% else %}
         {% for article in latest_articles %}
         <!-- single product -->
         <div class="col-lg-3 col-md-6">
@@ -256,6 +265,7 @@
           </div>
         </div>
         {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
@@ -277,6 +287,15 @@
         </div>
       </div>
       <div class="row">
+        {% if latest_articles|length == 0 %}
+        <div class="col-12 text-center">
+            <div style="height: 200px; display: flex; align-items: center; justify-content: center; border: 2px dashed #ccc; background-color: #f9f9f9;">
+              <p style="font-size: 1.5rem; font-weight: bold; color: #555;">
+                There are no articles in the store yet.
+              </p>
+            </div>
+          </div>
+        {% else %}
         {% for article in random_articles %}
         <!-- single product -->
         <div class="col-lg-3 col-md-6">
@@ -329,6 +348,7 @@
           </div>
         </div>
         {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
