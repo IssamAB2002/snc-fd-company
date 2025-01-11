@@ -205,6 +205,16 @@
         <!-- Start Best Seller -->
         <section class="lattest-product-area pb-40 category-list">
           <div class="row article-container">
+            {% if page_obj|length == 0 %}
+              <!-- Display message when no articles are available -->
+              <div class="col-12 text-center">
+                <div class="my-3" style="height: 200px; display: flex; align-items: center; justify-content: center; border: 2px dashed #ccc; background-color: #f9f9f9;">
+                  <p style="font-size: 1.5rem; font-weight: bold; color: #555;">
+                    There are no articles in the shop at the moment. Please check back later.
+                  </p>
+                </div>
+              </div>
+            {% else %}
             {% for article in page_obj %}
             <!-- single product -->
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
@@ -260,6 +270,7 @@
               </div>
             </div>
             {% endfor %}
+            {% endif %}
           </div>
         </section>
         <!-- End Best Seller -->

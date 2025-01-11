@@ -14,7 +14,7 @@ import random
 # import custom serializers 
 from .serializers import * 
 from .models import AndroidApp
-from users.utils import generate_phone_verification_token
+from users.utils import generate_phone_verification_token, inform_managers
 from users.models import User
 from users.utils import is_within_allowed_time, can_place_order
 from core.models import BannerArticle 
@@ -180,6 +180,8 @@ class OrderAPIView(APIView):
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
             order = serializer.save()
+            inform_managers(f'{order.user.first_name.capitalize()} {order.user.last_name.capitalize()} Placed New Order',
+                    f'Order ID: {order.id}\nTotal: {order.total_price}\nPlaced by: {order.user.first_name} { order.user.last_name }')
             return Response(
                 {
                     "message": "Order created successfully.",
